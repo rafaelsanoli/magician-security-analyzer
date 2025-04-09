@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Relatório Magician</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .severity-HIGH { @apply bg-red-500 text-white px-2 rounded; }
+    .severity-MEDIUM { @apply bg-yellow-400 text-black px-2 rounded; }
+    .severity-LOW { @apply bg-green-400 text-black px-2 rounded; }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <section>
+        <h2 class="text-4xl font-bold">🔍 Magician Analyzer</h2>
+        <p class="text-gray-600">Relatório gerado em {{ date.strftime('%d/%m/%Y %H:%M:%S') }}</p>
+        <p class="mt-4 text-lg">Total de findings: <strong>{{ results|length }}</strong></p>
+      </section>
+
+      {% for item in results %}
+      <section>
+        <h3 class="text-2xl font-bold">{{ item.tool }}</h3>
+        <p><strong>Arquivo:</strong> <code>{{ item.file }}</code></p>
+        <p><strong>Linha:</strong> {{ item.line }}</p>
+        <p>
+          <strong>Severidade:</strong>
+          <span class="severity-{{ item.severity|upper }}">{{ item.severity }}</span>
+        </p>
+        <pre class="mt-4 bg-gray-800 text-white p-3 rounded">{{ item.message }}</pre>
+      </section>
+      {% endfor %}
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: true,
+      transition: 'fade'
+    });
+  </script>
+</body>
+</html>
