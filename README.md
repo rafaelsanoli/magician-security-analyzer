@@ -60,7 +60,7 @@ go run main.go scan
 ```
 
 ---
-## Configuração do Modelo Llama-2-7B Q4_K_M para Análise de Segurança de Código
+## Configuração do Llama-2-7B-32K-Instruct.Q4_K_M. para Análise de Segurança de Código
 
 Este projeto utiliza modelos de linguagem para realizar análises automatizadas de segurança de código, detectando vulnerabilidades, más práticas e sugerindo melhorias. O modelo **Llama-2-7B Q4_K_M** é usado localmente para análise, e a API da OpenAI pode ser utilizada como fallback para obter melhores resultados quando necessário.
 
