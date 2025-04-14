@@ -2,7 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.routes import scan
 from fastapi.staticfiles import StaticFiles
+app = FastAPI()
+app.include_router(scan.router)
+
+
 app.mount("/static", StaticFiles(directory="api/static"), name="static")
+
 
 app = FastAPI(
     title="Magician Software Analyzer API",

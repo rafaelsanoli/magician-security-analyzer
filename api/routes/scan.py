@@ -1,13 +1,36 @@
-from fastapi import APIRouter, UploadFile, File, Form
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Request
 from fastapi.responses import JSONResponse
 import subprocess
 import tempfile
 import shutil
 import os
 import json
+from pydantic import BaseModel
+from api.services.analyzer import analyze_code_with_llm
 from datetime import datetime
+from api.services.analyzer import analyze_code_with_llm
+from api.services import analyzer
 
-router = APIRouter()
+router = APIRouter() #inicializa o router aqui
+
+class CodeInput(BaseModel):
+    code: str
+    lang: str
+
+@router.post("/analyze")
+async def analyze_code(payload: CodeInput):
+    if not payload.code.strip():
+        raise HTTPException(status_code=400, detail="Código não pode estar vazio.")
+
+    result = analyze_code_with_llm(payload.code, payload.lang)
+
+    if "error" in result:
+        raise HTTPException(status_code=500, detail=result["error"])
+
+    return {
+        "language": payload.lang,
+        "analysis": result["analysis"]
+    }
 
 @router.post("/")
 async def scan_project(
