@@ -1,7 +1,7 @@
 # Magician Security Analyzer — Auditoria de Segurança Automatizada para Repositórios de Código
 
-Uma plataforma inteligente que analisa repositórios de código, Dockerfiles, pipelines CI/CD e busca por segredos sensíveis — com suporte a correções automáticas, geração de relatórios visuais e criação de pull requests.  
-Ideal para DevSecOps, segurança de software, revisão de código e integrações CI.
+Uma plataforma inteligente que analisa repositórios de código, Dockerfiles, pipelines CI/CD e busca por segredos sensíveis — com suporte a correções automáticas, geração de relatórios visuais e criação de pull requests.
+Ideal para DevSecOps, segurança de software, revisão de código e integrações CI..
 
 ---
 
@@ -20,16 +20,41 @@ Ideal para DevSecOps, segurança de software, revisão de código e integraçõe
 
 ---
 
-## 🚀 Como usar (CLI)
+## 🧠 IA de Segurança de Código
 
-### 1. Clone o projeto
+A IA analisa trechos de código e retorna vulnerabilidades, más práticas e sugestões no formato JSON padronizado, como:
+
+```json
+[
+  {
+    "tipo_de_falha": "Injeção de comandos",
+    "trecho": "os.system(user_input)",
+    "recomendacao": "Use subprocess e sanitize a entrada do usuário.",
+    "severidade": "crítica"
+  }
+]
+
+---
+
+## 🚀 Executando Localmente (CLI)
+
+### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/seuusuario/magician-analyzer.git
-cd magician-analyzer
+git clone https://github.com/rafaelsanoli/magician-security-analyzer.git
+cd magician-security-analyzer
+```
+### 2. Configurar variáveis de ambiente
+
+Crie um arquivo .env com:
+
+```bash
+USE_OPENAI=false                 # ou true
+OPENAI_API_KEY=sk-xxxxxxx        # se usar OpenAI
+LLAMA_MODEL_PATH=models/llama-2-7b.gguf
 ```
 
-### 2. Instale as dependências
+### 3. Instale as dependências
 
 ```bash
 # Go
@@ -46,10 +71,18 @@ pip install jinja2 weasyprint fastapi uvicorn
 gh auth login
 ```
 
-### 3. Execute a análise no terminal
+### 4. Executar análise com IA
+
+Via API:
 
 ```bash
-go run main.go scan
+cd api/
+python main.py
+```
+Via CLI:
+
+```bash
+go run main.go scan --ia --fix
 ```
 
 #### ⚙️ Flags úteis:
@@ -58,120 +91,11 @@ go run main.go scan
 --fix      # Aplica correções automáticas quando possível
 --pr       # Cria um pull request com as correções (requer --fix)
 ```
-
 ---
-## Configuração do Llama-2-7B-32K-Instruct.Q4_K_M. para Análise de Segurança de Código
 
-Este projeto utiliza modelos de linguagem para realizar análises automatizadas de segurança de código, detectando vulnerabilidades, más práticas e sugerindo melhorias. O modelo **Llama-2-7B Q4_K_M** é usado localmente para análise, e a API da OpenAI pode ser utilizada como fallback para obter melhores resultados quando necessário.
+#### 🧪 Testes
 
-### 1. **Pré-requisitos**
-
-- Python 3.8 ou superior
-- Biblioteca `llama_cpp` para interação com o modelo Llama
-- Biblioteca `openai` para integração com a API da OpenAI
-- Acesso à internet para baixar o modelo e interagir com a API da OpenAI
-
-### 2. **Instalação**
-
-1. Clone o repositório:
-
-    ```bash
-    git clone https://github.com/seu-usuario/magician-security-analyzer.git
-    cd magician-security-analyzer
-    ```
-
-2. Crie um ambiente virtual (recomendado):
-
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate  # No Linux/macOS
-    .\venv\Scripts\activate   # No Windows
-    ```
-
-3. Instale as dependências:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-### 3. **Configuração do Modelo Local (Llama-2-7B Q4_K_M)**
-
-1. Coloque o arquivo do modelo **Llama-2-7B Q4_K_M** na pasta `models/` do seu projeto.
-
-2. Defina a variável de ambiente `LLAMA_MODEL_PATH` com o caminho do modelo, por exemplo:
-
-    ```bash
-    export LLAMA_MODEL_PATH="/caminho/para/o/modelo/llama-2-7b-q4_k_m.gguf"
-    ```
-
-3. Defina a variável de ambiente `USE_OPENAI` para `false` para usar o modelo local:
-
-    ```bash
-    export USE_OPENAI="false"
-    ```
-
-### 4. **Configuração da API OpenAI (Fallback)**
-
-1. Crie uma conta no [OpenAI](https://platform.openai.com/) e gere uma chave de API.
-
-2. Defina a variável de ambiente `OPENAI_API_KEY` com sua chave de API:
-
-    ```bash
-    export OPENAI_API_KEY="sua-chave-da-api"
-    ```
-
-3. Defina a variável `USE_OPENAI` para `true` caso deseje usar a OpenAI como fallback:
-
-    ```bash
-    export USE_OPENAI="true"
-    ```
-
-### 5. **Rodando o Analisador de Código**
-
-Para rodar a análise de segurança de código, basta chamar o script que você deseja, passando o código a ser analisado e o tipo de linguagem (por exemplo, Python):
-
-```bash
-python analyze_code.py --code "código_fonte_aqui" --language "python"
-```
-
-### 6. Modificando o Comportamento do Analisador
-
-O comportamento do modelo pode ser ajustado via prompts para garantir que ele identifique vulnerabilidades de segurança, más práticas de programação e forneça sugestões de melhorias. Você pode ajustar o prompt na função generate_prompt no código, para alterar a forma como o modelo analisa os códigos.
-### Exemplo de Prompt Personalizado
-```bash
-def generate_prompt(code: str, language: str) -> str:
-    return f"""
-    Você é um especialista em segurança de software e deve analisar o código abaixo, procurando especificamente:
-    
-    1. Vulnerabilidades de segurança, como:
-        - Injeção de comandos
-        - Falhas de autenticação
-        - Falhas de autorização
-        - Exposição de dados sensíveis
-    
-    2. Más práticas de programação (ex: uso de funções obsoletas, falta de validação de entrada).
-    
-    3. Sugestões de melhorias e correções, considerando as melhores práticas de segurança.
-    
-    Explique cada ponto identificado de forma clara e técnica.
-    
-    Código:
-    ```{language}
-    {code}
-    ```
-    """
-```
-### 7. Desempenho e Otimização
-
-Para garantir que a análise de segurança de código seja rápida e eficiente, considere as seguintes otimizações:
-
-    Uso de Modelos Menores: Se o modelo local estiver demorando muito para gerar as análises, considere usar modelos menores ou ajustar o número de camadas da GPU (caso você tenha uma placa gráfica com recursos limitados).
-
-    Uso de OpenAI para Melhor Performance: Em casos onde a análise precisa ser feita rapidamente, você pode usar a OpenAI como fallback, configurando a variável USE_OPENAI para true.
-
-### Contribuindo
-
-Se você deseja contribuir para este projeto, fique à vontade para enviar pull requests. Fique atento para melhorias, otimizações de desempenho e novas funcionalidades!
+## Você pode rodar exemplos com arquivos de código via API ou CLI. A IA identificará padrões críticos e gerará alertas semânticos.
 
 ---
 
@@ -266,4 +190,6 @@ magician-analyzer/
 
 MIT License © 2025  
 Feito com 💻 e 🛡️ por quem acredita em software seguro por padrão.
+
+
 
