@@ -1,7 +1,7 @@
 # Magician Security Analyzer — Auditoria de Segurança Automatizada para Repositórios de Código
 
 Uma plataforma inteligente que analisa repositórios de código, Dockerfiles, pipelines CI/CD e busca por segredos sensíveis — com suporte a correções automáticas, geração de relatórios visuais e criação de pull requests.
-Ideal para DevSecOps, segurança de software, revisão de código e integrações CI..
+Ideal para DevSecOps, segurança de software, revisão de código e integrações CI/CD.
 
 ---
 
